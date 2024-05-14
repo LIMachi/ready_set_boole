@@ -4,6 +4,7 @@ Write a series of function to do bit manipulation or basic operations using bit 
 References used:
 - Gray Code (ex02): https://en.wikipedia.org/wiki/Gray_code
 - Material condition (ex03): https://en.wikipedia.org/wiki/Material_conditional
+- Karnaugh map: https://www.techtarget.com/whatis/definition/Karnaugh-map-K-map
 
 Rust version: `rustc 1.77.2`
 
@@ -15,18 +16,13 @@ Completion:
 - [x] ex02 gray code
 - [x] ex03 evaluator
 - [x] ex04 truth table
-- [ ] ex05 nnf (negation normal form)
-- [ ] ex06 cnf (conjunctive normal form)
-- [ ] ex07 SAT
+- [x] ex05 nnf (negation normal form)
+- [x] ex06 cnf (conjunctive normal form)
+- [x] ex07 SAT
 - [ ] ex08 powerset
 - [ ] ex09 set evaluation
 - [ ] ex10 curve
 - [ ] ex11 inverse function
-
-Bonuses:
-- [ ] TODO
-- [ ] TODO
-- [ ] TODO
 
 Testing:
 `cargo test`

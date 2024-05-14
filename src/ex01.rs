@@ -17,7 +17,7 @@ pub fn multiplier(a: u32, b: u32) -> u32 {
 }
 
 #[test]
-pub fn test_mutliplier() {
+pub fn test_multiplier() {
     dbg!(multiplier(0, 10));
     dbg!(multiplier(1, 10));
     dbg!(multiplier(2, 2));
