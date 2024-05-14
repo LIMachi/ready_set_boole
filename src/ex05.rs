@@ -1,6 +1,6 @@
-use crate::reverse_polish_notation::{RPN, RPNError, RPNNode};
+use crate::reverse_polish_notation::{RPN, RPNError, RPNNode, RPNVar};
 
-impl RPN {
+impl <T: RPNVar + Clone> RPN<T> {
     pub fn nnf(&mut self) -> Result<(), RPNError> {
         self.rec(&mut RPNNode::replace_equivalences);
         self.rec(&mut RPNNode::replace_material_conditions);
@@ -11,7 +11,7 @@ impl RPN {
 }
 
 pub fn negation_normal_form(formula: &str) -> String {
-    let mut rpn = RPN::parse(formula).unwrap();
+    let mut rpn = RPN::<bool>::parse(formula).unwrap();
     rpn.nnf().unwrap();
     rpn.as_string()
 }

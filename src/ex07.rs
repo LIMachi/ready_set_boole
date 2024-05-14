@@ -1,6 +1,6 @@
 use crate::reverse_polish_notation::{RPN, RPNError};
 
-impl RPN {
+impl RPN<bool> {
     //find if any combination of var return true (similar to truth table)
     pub fn sat(&mut self) -> Result<bool, RPNError> {
         self.extract_truth_table().map(|v| v.iter().fold(false, |a, (_, r)| a || *r))

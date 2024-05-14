@@ -1,9 +1,9 @@
 use std::rc::Rc;
 
 #[derive(Debug)]
-pub struct RPN {
+pub struct RPN<T: RPNVar + Clone> {
     pub var_names: Vec<char>,
-    pub vars: Vec<bool>,
+    pub vars: Vec<T>,
     pub nodes: Vec<Rc<RPNNode>>,
 }
 
@@ -27,18 +27,44 @@ pub enum RPNNode {
     LogicalEquivalence(Rc<RPNNode>, Rc<RPNNode>), // =
 }
 
+pub trait RPNVar {
+    fn from_bool(val: bool) -> Self;
+    fn negation(&self) -> Self;
+    fn conjunction(&self, other: &Self) -> Self;
+    fn disjunction(&self, other: &Self) -> Self;
+    fn exclusive_disjunction(&self, other: &Self) -> Self;
+    fn material_condition(&self, other: &Self) -> Self;
+    fn logical_equivalence(&self, other: &Self) -> Self;
+}
+
+impl RPNVar for bool {
+    fn from_bool(val: bool) -> Self { val }
+
+    fn negation(&self) -> Self { !self }
+
+    fn conjunction(&self, other: &Self) -> Self { self & other }
+
+    fn disjunction(&self, other: &Self) -> Self { self | other }
+
+    fn exclusive_disjunction(&self, other: &Self) -> Self { self ^ other }
+
+    fn material_condition(&self, other: &Self) -> Self { !(self & !other) }
+
+    fn logical_equivalence(&self, other: &Self) -> Self { self == other }
+}
+
 impl RPNNode {
-    pub fn solve(&self, vars: &Vec<bool>) -> Result<bool, RPNError> {
+    pub fn solve<T: RPNVar + Clone>(&self, vars: &Vec<T>) -> Result<T, RPNError> {
         match self {
-            Self::False => Ok(false),
-            Self::True => Ok(true),
-            Self::Var(i) => Ok(vars[*i]),
-            Self::Negation(r) => r.solve(vars).map(|v| !v),
-            Self::Conjunction(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| v1 && v2)),
-            Self::Disjunction(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| v1 || v2)),
-            Self::ExclusiveDisjunction(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| v1 ^ v2)),
-            Self::MaterialCondition(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| !(v1 && !v2))),
-            Self::LogicalEquivalence(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| v1 == v2)),
+            Self::False => Ok(T::from_bool(false)),
+            Self::True => Ok(T::from_bool(true)),
+            Self::Var(i) => Ok(vars[*i].clone()),
+            Self::Negation(r) => r.solve(vars).map(|v| v.negation()),
+            Self::Conjunction(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| (&v1).conjunction(&v2))),
+            Self::Disjunction(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| (&v1).disjunction(&v2))),
+            Self::ExclusiveDisjunction(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| (&v1).exclusive_disjunction(&v2))),
+            Self::MaterialCondition(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| (&v1).material_condition(&v2))),
+            Self::LogicalEquivalence(r1, r2) => r1.solve(vars).and_then(|v1| r2.solve(vars).map(|v2| (&v1).logical_equivalence(&v2))),
         }
     }
 
@@ -57,7 +83,7 @@ impl RPNNode {
     }
 }
 
-impl RPN {
+impl <T: RPNVar + Clone> RPN<T> {
     pub fn parse(formula: &str) -> Result<Self, RPNError> {
         let mut out = Self {
             var_names: vec![],
@@ -73,7 +99,7 @@ impl RPN {
                     out.nodes.push(Rc::new(RPNNode::Var(c as usize - 'A' as usize)));
                     if !out.var_names.contains(&c) {
                         out.var_names.push(c);
-                        out.vars.push(false);
+                        out.vars.push(T::from_bool(false));
                     }
                 }
                 '!' => if l > 0 { out.nodes[l - 1] = Rc::new(RPNNode::Negation(out.nodes[l - 1].clone())); } else { return Err(RPNError::InvalidBackReference(c, i)); }
@@ -88,9 +114,9 @@ impl RPN {
         Ok(out)
     }
 
-    pub fn evaluate(&self) -> Result<bool, RPNError> {
+    pub fn evaluate(&self) -> Result<T, RPNError> {
         if self.nodes.len() == 0 {
-            Ok(false)
+            Ok(T::from_bool(false))
         } else {
             self.nodes[self.nodes.len() - 1].solve(&self.vars)
         }

@@ -1,6 +1,6 @@
-use crate::reverse_polish_notation::{RPN, RPNError, RPNNode};
+use crate::reverse_polish_notation::{RPN, RPNError};
 
-impl RPN {
+impl RPN<bool> {
     pub fn extract_truth_table(&mut self) -> Result<Vec<(Vec<bool>, bool)>, RPNError> {
         let l = self.var_names.len();
         let mut out = Vec::new();

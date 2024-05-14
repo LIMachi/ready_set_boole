@@ -1,5 +1,5 @@
 use std::rc::Rc;
-use crate::reverse_polish_notation::{RPN, RPNError, RPNNode};
+use crate::reverse_polish_notation::{RPN, RPNError, RPNNode, RPNVar};
 
 impl RPNNode {
     //swap the children of the node if possible
@@ -66,7 +66,7 @@ impl RPNNode {
     }
 }
 
-impl RPN {
+impl <T: RPNVar + Clone> RPN<T> {
     //similar to nnf, but also ensure there is only !&| symbols (no ^=>) and & are always at the end (resulting in a POS notation aka product of sums)
     pub fn cnf(&mut self) -> Result<(), RPNError> {
         self.rec(&mut RPNNode::replace_exclusive_disjunctions); //AB^ -> AB=!
@@ -96,7 +96,7 @@ impl RPN {
 }
 
 pub fn conjunctive_normal_form(formula: &str) -> String {
-    let mut rpn = RPN::parse(formula).unwrap();
+    let mut rpn = RPN::<bool>::parse(formula).unwrap();
     rpn.cnf().unwrap();
     rpn.as_string()
 }
