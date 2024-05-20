@@ -1,4 +1,6 @@
 use crate::reverse_polish_notation::{RPN, RPNError};
+use crate::show;
+use crate::utils::ex;
 
 impl RPN<bool> {
     pub fn extract_truth_table(&mut self) -> Result<Vec<(Vec<bool>, bool)>, RPNError> {
@@ -35,6 +37,11 @@ impl RPN<bool> {
 
 pub fn print_truth_table(formula: &str) {
     RPN::parse(formula).unwrap().print_truth_table().unwrap()
+}
+
+pub fn ex04() {
+    ex(4, "Truth table");
+    show!(print_truth_table("AB&C|"));
 }
 
 #[test]

@@ -1,3 +1,6 @@
+use crate::dresult;
+use crate::utils::ex;
+
 //note: the technique used is limited to a maximum of 63 initial terms (since I use binary properties to generate my unique sets)
 //a recursive method should be preferred for bigger sets (but 63 initial terms is already bigger than most computer's memory so...)
 //on my machine I overflow before 42 initial terms (32G of memory)
@@ -13,6 +16,16 @@ pub fn powerset(set: Vec<i32>) -> Vec<Vec<i32>> {
         out.push(t);
     }
     out
+}
+
+pub fn ex08() {
+    ex(8, "Powerset");
+    dresult!(
+        powerset(vec![]),
+        powerset(vec![1]),
+        powerset(vec![1, 2, 3]),
+        powerset(vec![1, 2, 3, 4, 5, 6]),
+    );
 }
 
 #[test]

@@ -1,3 +1,6 @@
+use crate::result;
+use crate::utils::ex;
+
 ///allowed: & | ^ << >> = == != < > <= >=
 ///tolerated: ++/+= only in loops
 pub fn adder(a: u32, b: u32) -> u32 {
@@ -10,6 +13,20 @@ pub fn adder(a: u32, b: u32) -> u32 {
         }
         q <<= 1;
     }
+}
+
+pub fn ex00() {
+    ex(0, "Adder");
+    result!(
+        adder(0, 1),
+        adder(1, 1),
+        adder(2, 2),
+        adder(3, 5),
+        adder(7, 7),
+        adder(u32::MAX, 1),
+        adder(2, u32::MAX),
+        adder(u32::MAX, u32::MAX),
+    );
 }
 
 #[test]

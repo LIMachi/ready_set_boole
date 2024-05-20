@@ -1,7 +1,9 @@
+use crate::dresult;
 use crate::reverse_polish_notation::{RPN, RPNNode, RPNVar};
+use crate::utils::ex;
 
 impl RPNVar for Vec<i32> {
-    fn from_bool(val: bool) -> Self {
+    fn from_bool(_: bool) -> Self {
         vec![]
     }
 
@@ -44,7 +46,7 @@ impl RPNVar for Vec<i32> {
         out
     }
 
-    fn material_condition(&self, other: &Self) -> Self {
+    fn material_condition(&self, _: &Self) -> Self {
         todo!()
     }
 
@@ -64,6 +66,15 @@ pub fn eval_set(formula: &str, sets: Vec<Vec<i32>>) -> Vec<i32> {
     rpn.rec(&mut RPNNode::replace_material_conditions); //since material condition is not currently implemented for Vec<i32>, replace them TODO: implement material condition for sets (aka Vec<i32>)
     rpn.vars = sets;
     rpn.evaluate().unwrap()
+}
+
+pub fn ex09() {
+    ex(9, "Set evaluation");
+    dresult!(
+        eval_set("AB&", vec![vec![0, 1, 2], vec![0, 3, 4]]),
+        eval_set("AB|", vec![vec![0, 1, 2], vec![3, 4, 5]]),
+        eval_set("A!", vec![vec![0, 1, 2]]),
+    );
 }
 
 #[test]

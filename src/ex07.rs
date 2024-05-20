@@ -1,4 +1,6 @@
+use crate::result;
 use crate::reverse_polish_notation::{RPN, RPNError};
+use crate::utils::ex;
 
 impl RPN<bool> {
     //find if any combination of var return true (similar to truth table)
@@ -9,6 +11,16 @@ impl RPN<bool> {
 
 pub fn sat(formula: &str) -> bool {
     RPN::parse(formula).unwrap().sat().unwrap()
+}
+
+pub fn ex07() {
+    ex(7, "SAT");
+    result!(
+        sat("AB|"),
+        sat("AB&"),
+        sat("AA!&"),
+        sat("AA^"),
+    );
 }
 
 #[test]

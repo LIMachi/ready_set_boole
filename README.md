@@ -19,10 +19,10 @@ Completion:
 - [x] ex05 nnf (negation normal form)
 - [x] ex06 cnf (conjunctive normal form)
 - [x] ex07 SAT
-- [ ] ex08 powerset
-- [ ] ex09 set evaluation
-- [ ] ex10 curve
-- [ ] ex11 inverse function
+- [x] ex08 powerset
+- [x] ex09 set evaluation
+- [x] ex10 curve
+- [x] ex11 inverse function
 
 Testing:
-`cargo test`
+`cargo run` / `cargo test`

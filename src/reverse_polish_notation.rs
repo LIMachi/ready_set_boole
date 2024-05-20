@@ -11,7 +11,6 @@ pub struct RPN<T: RPNVar + Clone> {
 pub enum RPNError {
     InvalidCharacter(char),
     InvalidBackReference(char, usize),
-    InvalidIndexForASTOfLength(usize, usize),
 }
 
 #[derive(Clone, Debug, PartialEq)]

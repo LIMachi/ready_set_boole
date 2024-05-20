@@ -1,5 +1,7 @@
 use std::rc::Rc;
+use crate::result;
 use crate::reverse_polish_notation::{RPN, RPNError, RPNNode, RPNVar};
+use crate::utils::ex;
 
 impl RPNNode {
     //swap the children of the node if possible
@@ -26,14 +28,6 @@ impl RPNNode {
             true
         } else {
             false
-        }
-    }
-
-    pub fn children_count(&self) -> usize {
-        match self {
-            Self::False | Self::True | Self::Var(_) => 0,
-            Self::Negation(_) => 1,
-            _ => 2
         }
     }
 
@@ -99,6 +93,19 @@ pub fn conjunctive_normal_form(formula: &str) -> String {
     let mut rpn = RPN::<bool>::parse(formula).unwrap();
     rpn.cnf().unwrap();
     rpn.as_string()
+}
+
+pub fn ex06() {
+    ex(6, "Conjunctive normal form");
+    result!(
+        conjunctive_normal_form("AB&!"),
+        conjunctive_normal_form("AB|!"),
+        conjunctive_normal_form("AB|C&"),
+        conjunctive_normal_form("AB|C|D|"),
+        conjunctive_normal_form("AB&C&D&"),
+        conjunctive_normal_form("AB&!C!|"),
+        conjunctive_normal_form("AB|!C!&"),
+    );
 }
 
 #[test]
