@@ -40,8 +40,10 @@ macro_rules! dresult {
 #[macro_export]
 macro_rules! show {
     ($val:expr $(,)?) => {
-        println!("{}", stringify!($val));
-        $val
+        {
+            println!("{}", stringify!($val));
+            $val
+        }
     };
     ($($val:expr),+ $(,)?) => {
         ($(show!($val)),+,)
